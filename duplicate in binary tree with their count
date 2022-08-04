@@ -1,0 +1,404 @@
+#include <iostream>
+using namespace std;
+class tnode
+{
+public:
+    char data;
+    tnode *left;
+    tnode *right;
+public:
+    tnode()
+    {
+        left=NULL;
+        right=NULL;
+    }
+
+};
+class node{
+    public:
+    char data;
+    int times;
+};
+class Queuenode
+{
+    public:
+    node a[50];
+    int rear=0;
+    int front=0;
+    int s;
+
+    Queuenode()
+    {
+        s=50;
+        rear=0;
+        front=0;
+    }
+    void Enq(char ch,int t)
+    {
+        if(rear>=s)
+        {
+            cout<<"Queue is FULL\n";
+            return ;
+        }
+        else
+        {
+
+            a[rear].data=ch;
+            a[rear].times=t;
+            cout<<a[rear].data<<" has duplicates "<<endl;
+            rear++;
+        }
+
+    }
+    void DupDisplay()
+    {
+         int f=front;
+         cout<<"data \t times\n";
+        while(rear!=f)
+        {
+            cout<<a[f].data<<"\t"<<a[f].times<<endl;;
+            f++;
+
+        }
+        cout<<endl;
+    }
+
+};
+class Queue
+{
+public:
+    tnode* a[50];
+    int rear=0;
+    int front=0;
+    int s;
+
+    Queue()
+    {
+        s=50;
+        rear=0;
+        front=0;
+    }
+    void Enq(tnode *ch)
+    {
+        if(rear>=s)
+        {
+            cout<<"Queue is FULL\n";
+            return ;
+        }
+        else
+        {
+
+            a[rear]=ch;
+            rear++;
+        }
+
+    }
+    tnode* Deq()
+    {
+        if(rear==front)
+        {
+            cout<<"Queue is Empty ";
+        }
+        else
+        {
+            front++;
+            return a[front-1];
+        }
+    }
+    tnode* peek()
+    {
+        if(rear==front)
+        {
+            cout<<"Queue is Empty ";
+        }
+        else
+        {
+            return a[front];
+        }
+    }
+
+    void Display()
+    {
+
+        int f=front;
+        while(rear!=f)
+        {
+            cout<<a[f]->data;
+            f++;
+
+        }
+        cout<<endl;
+    }
+
+};
+int s=0;
+void print(tnode* t,int s=0)
+{
+    if(t==NULL)
+        return;
+    s+=5;
+    print(t->right,s);
+    cout<<endl;
+    for(int i=5;i<s;i++)
+        cout<<" ";
+    cout<<t->data<<endl;
+    print(t->left,s);
+     cout<<"\n\n";
+}
+void preorder(tnode *p)
+{
+    if(p!=NULL)
+    {
+        cout<<" "<<p->data;
+        preorder(p->left);
+        preorder(p->right);
+
+    }
+}
+void inorder(tnode *p)
+{
+
+    if(p!=NULL)
+    {
+
+        inorder(p->left);
+        cout<<" "<<p->data;
+        inorder(p->right);
+    }
+
+}
+int check(tnode *p,int s,int i=0)
+{
+
+    if(p!=NULL)
+    {
+
+        check(p->left,s,i);
+        if(s==p->data)
+            i++;
+        check(p->right,s,i);
+    }
+    return i;
+
+}
+void postorder(tnode *p)
+{
+    if(p!=NULL)
+    {
+        postorder(p->left);
+        postorder(p->right);
+        cout<<" "<<p->data;
+    }
+}
+int count=0;
+void NoOfLeaves(tnode* r)
+{
+    if(r!=NULL)
+    {
+        NoOfLeaves(r->left);
+        NoOfLeaves(r->right);
+         if(r->left==NULL && r->right==NULL)
+         {
+             count++;
+
+         }
+    }
+}
+
+void level(tnode *t)
+{
+    Queue q;
+    q.Enq(t);
+    tnode *r;
+    cout<<t->data;
+    while(q.rear!=q.front)
+    {
+
+        r=q.Deq();
+        if(r->left!=NULL && r->right!=NULL)
+        {
+            q.Enq(r->left);
+            q.Enq(r->right);
+            cout<<r->left->data;
+            cout<<r->right->data;
+            goto j;
+        }
+        if(r->left!=NULL)
+        {
+            q.Enq(r->left);
+            cout<<r->left->data;
+            goto j;
+        }
+        if(r->right!=NULL)
+        {
+            q.Enq(r->right);
+            cout<<r->right->data;
+            goto j;
+        }
+        j:;
+
+    }
+}
+void dup(tnode *t)
+{
+    Queue q,q1;
+    q.Enq(t);
+    q1.Enq(t);
+    tnode *r;
+    while(q.rear!=q.front)
+    {
+
+        r=q.Deq();
+        if(r->left!=NULL && r->right!=NULL)
+        {
+            q.Enq(r->left);
+            q1.Enq(r->left);
+            q.Enq(r->right);
+            q1.Enq(r->right);
+            goto j;
+        }
+        if(r->left!=NULL)
+        {
+            q.Enq(r->left);
+            q1.Enq(r->left);
+            goto j;
+        }
+        if(r->right!=NULL)
+        {
+            q.Enq(r->right);
+            q1.Enq(r->right);
+            goto j;
+        }
+        j:;
+
+    }
+
+    q1.Display();
+    int status=0;
+    Queuenode q2;
+    for(int f=q1.front;f!=q1.rear;f++)
+    {
+        status=0;
+        int count=0;
+        for(int f1=f;f1!=q1.rear;f1++)
+        {
+            if(q1.a[f]->data==q1.a[f1]->data)
+            {
+                count++;
+                for(int f3=q2.front;f3!=q2.rear;f3++)
+                {
+                    if(q1.a[f]->data==q2.a[f3].data )
+                   {
+                       status=1;
+                   }
+                }
+
+            }
+        }
+         if(status==0)
+                {
+                    if(count>1)
+                    q2.Enq(q1.a[f]->data,count);
+                }
+
+    }
+    q2.DupDisplay();
+
+
+}
+
+int main()
+{
+    Queue q;
+    char a,b;
+    int n;
+    cout<<"Enter the element :";
+    cin>>a;
+    tnode *t;
+    tnode *root;
+    tnode *newnode=new tnode;
+    newnode->data=a;
+    root=newnode;
+    q.Enq(newnode);
+    while(q.rear!=q.front)
+    {
+        t=q.Deq();
+        cout<<"\n1.left child\n2.right child\n3.Both\n4.No child\nEnter your choice for "<<t->data<<" : ";
+        cin>>n;
+        switch(n)
+        {
+        case 1:
+            {
+                cout<<"Enter the left :";
+                cin>>a;
+                tnode *newnode=new tnode;
+                newnode->data=a;
+                t->left=newnode;
+                q.Enq(newnode);
+                break;
+            }
+        case 2:
+            {
+                cout<<"Enter the right :";
+                cin>>a;
+                tnode *newnode=new tnode;
+                newnode->data=a;
+                t->right=newnode;
+                q.Enq(newnode);
+                break;
+            }
+        case 3:
+            {
+                cout<<"Enter the left and right :";
+                cin>>a>>b;
+                tnode *newnode=new tnode;
+                newnode->data=a;
+                t->left=newnode;
+                q.Enq(newnode);
+                tnode *newnode2=new tnode;
+                newnode2->data=b;
+                t->right=newnode2;
+                q.Enq(newnode2);
+                break;
+            }
+
+        }
+
+
+
+
+
+    }
+    print(root);
+    cout<<"\n--------------------------------\n\n";
+    cout<<"Inorder Traversel :";
+    inorder(root);
+    cout<<"\n--------------------------------\n";
+    cout<<"\nPreorder Traversel :";
+    preorder(root);
+    cout<<"\n--------------------------------\n";
+    cout<<"\nPostorder Traversel :";
+    postorder(root);
+    cout<<"\n--------------------------------\n";
+    cout<<"\nLevel order :";
+    level(root);
+    cout<<"\n--------------------------------\n";
+    cout<<"\nNmumber of leaves :";
+    NoOfLeaves(root);
+    cout<<count<<endl;
+
+    cout<<"\n--------------------------------\n";
+
+    cout<<"Duplicates :"<<endl;
+    dup(root);
+    cout<<"\n--------------------------------\n";
+
+    return 0;
+
+}
+
+
+
+
+
+
